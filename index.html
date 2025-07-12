@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlueWorld City Profit</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f0f0; margin: 0; padding: 0; }
+    header { background: #003366; color: white; padding: 1rem; text-align: center; }
+    .plans { display: flex; flex-wrap: wrap; justify-content: center; padding: 1rem; }
+    .plan {
+      background: white; border-radius: 8px; margin: 0.5rem; padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); width: 250px;
+    }
+    .plan h3 { margin-top: 0; }
+    .plan button {
+      background: #003366; color: white; border: none; padding: 0.5rem 1rem;
+      border-radius: 4px; cursor: pointer; margin-top: 0.5rem;
+    }
+    form {
+      display: none; background: white; padding: 1rem; margin: 2rem auto;
+      width: 90%; max-width: 400px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      border-radius: 8px;
+    }
+    input, select {
+      width: 100%; padding: 0.5rem; margin: 0.5rem 0; border-radius: 4px; border: 1px solid #ccc;
+    }
+    #easypaisa, #jazzcash { background: #f9f9f9; padding: 0.5rem; border-radius: 4px; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>BlueWorld City Profit</h1>
+</header>
+
+<div class="plans" id="plans-container"></div>
+
+<form id="buyForm">
+  <h3>Buy Plan</h3>
+  <input type="text" name="user_name" placeholder="Your Name" required />
+  <input type="text" name="user_whatsapp" placeholder="WhatsApp Number" required />
+  <input type="text" name="user_plan" id="selectedPlan" readonly />
+  <div id="easypaisa"><strong>Easypaisa:</strong> 03319915139 (M. Farhan)</div>
+  <div id="jazzcash"><strong>JazzCash:</strong> 03499780098 (Amir Sohail)</div>
+  <button type="submit">Submit</button>
+</form>
+
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+  emailjs.init('a49FVA6egPXwTOItk');
+
+  const form = document.getElementById('buyForm');
+  const selectedPlanInput = document.getElementById('selectedPlan');
+
+  document.querySelectorAll('.plan button').forEach((btn, index) => {
+    btn.onclick = () => {
+      selectedPlanInput.value = btn.dataset.plan;
+      form.style.display = 'block';
+      window.scrollTo(0, form.offsetTop);
+    };
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    emailjs.sendForm('service_h78jy8f', 'template_azjsm22', this)
+      .then(() => {
+        alert('Your form has been submitted!');
+        form.reset();
+        form.style.display = 'none';
+      }, (error) => {
+        alert('FAILED...', error);
+      });
+  });
+
+  // Dynamically create plans
+  const plansContainer = document.getElementById('plans-container');
+  for (let i = 1; i <= 20; i++) {
+    const invest = 275 * i;
+    const profit = Math.round(invest * 0.08);
+    const total = profit * 90;
+    const div = document.createElement('div');
+    div.className = 'plan';
+    div.innerHTML = `<h3>Plan ${i}</h3><p>Invest: PKR ${invest}</p><p>Daily Profit: PKR ${profit}</p><p>Total (90 days): PKR ${total}</p><button data-plan="Plan ${i} - PKR ${invest}">Buy Plan</button>`;
+    plansContainer.appendChild(div);
+  }
+</script>
+
+</body>
+</html>
